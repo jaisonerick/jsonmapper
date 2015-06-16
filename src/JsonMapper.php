@@ -47,6 +47,8 @@ class JsonMapper
      */
     public $bExceptionOnMissingData = false;
 
+    private $customMapper;
+
     /**
      * Runtime cache for inspected classes. This is particularly effective if
      * mapArray() is called with a large number of objects
@@ -54,6 +56,11 @@ class JsonMapper
      * @var array property inspection result cache
      */
     protected $arInspectedClasses = array();
+
+    public function __construct(JsonMapper_CustomMapper $customMapper = null)
+    {
+        $this->customMapper = $customMapper;
+    }
 
     /**
      * Map data all data in $json into the given $object instance.
@@ -185,6 +192,10 @@ class JsonMapper
 
         if ($this->bExceptionOnMissingData) {
             $this->checkMissingData($providedProperties, $rc);
+        }
+
+        if ($this->customMapper) {
+            $this->customMapper->map($json, $object);
         }
 
         return $object;
